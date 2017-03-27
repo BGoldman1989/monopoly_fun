@@ -39,7 +39,7 @@ try:
     #get table of entered codes
     code_history = driver.find_element_by_class_name("table")
     header = code_history.find_elements_by_css_selector("thead th")
-    body = code_history.find_elements_by_css_selector(".codes tr")
+    body = code_history.find_elements_by_css_selector(".codes td:not(.select-code)")
 
     #Write to csv file
     if not path.exists("output"):
@@ -51,11 +51,11 @@ try:
                                         fieldnames=fieldnames)
         code_history_csv.writeheader()
 
-        for row in body:
-            row_arr = {}
-            cols = row.find_elements_by_tag_name("td")
-            for i in xrange(1, len(cols)):
-                row_arr[fieldnames[i-1]] = cols[i].text
-            code_history_csv.writerow(row_arr)
+        row = {}
+        for i in xrange(0,len(body)):
+            row[fieldnames[i%3]] = body[i].text
+            if i % 3 == 2:
+                code_history_csv.writerow(row)
+                row = {}
 finally:
     driver.quit()
