@@ -15,22 +15,23 @@ from selenium.webdriver.common.by import By
 config = ConfigParser.ConfigParser()
 config.read("config.ini")
 
-#Initialize Webdriver
 options = ChromeOptions()
 options.add_argument("--incognito")
-driver = Chrome(executable_path="chromedriver.exe",
-                chrome_options=options)
-
-#Login to monopoly sweepstakes page
-driver.get("https://www.playmonopoly.us/login")
-email = driver.find_element_by_id("email")
-password = driver.find_element_by_id("password")
-submit = driver.find_element_by_class_name("btn-submit")
-email.send_keys(config.get("Monopoly Login Credentials","email"))
-password.send_keys(config.get("Monopoly Login Credentials","password"))
-submit.click()
+driver = None
 
 try:
+    #Initialize Webdriver
+    driver = Chrome(executable_path="chromedriver.exe",
+                chrome_options=options)
+
+    #Login to monopoly sweepstakes page
+    driver.get("https://www.playmonopoly.us/login")
+    email = driver.find_element_by_id("email")
+    password = driver.find_element_by_id("password")
+    submit = driver.find_element_by_class_name("btn-submit")
+    email.send_keys(config.get("Monopoly Login Credentials","email"))
+    password.send_keys(config.get("Monopoly Login Credentials","password"))
+    submit.click()
     WebDriverWait(driver, 10).until(
         ec.presence_of_element_located((By.CLASS_NAME, "logged-in"))
     )
